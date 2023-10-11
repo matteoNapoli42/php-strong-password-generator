@@ -1,3 +1,41 @@
+<!--
+  Descrizione
+Dobbiamo creare una pagina che permetta ai nostri utenti di utilizzare il nostro generatore di password (abbastanza) sicure. L’esercizio è suddiviso in varie milestone ed è molto importante svilupparle in modo ordinato.
+Milestone 1
+Creare un form che invii in GET la lunghezza della password. Una nostra funzione utilizzerà questo dato per generare una password casuale (composta da lettere, lettere maiuscole, numeri e simboli) da restituire all’utente. Scriviamo tutto (logica e layout) in un unico file index.php
+Milestone 2
+Verificato il corretto funzionamento del nostro codice, spostiamo la logica in un file functions.php che includeremo poi nella pagina principale
+Milestone 3 (BONUS)
+Invece di visualizzare la password nella index, effettuare un redirect ad una pagina dedicata che tramite $_SESSION recupererà la password da mostrare all’utente.
+leggete le slide sulla session e la documentazione
+Milestone 4 (BONUS)
+Gestire ulteriori parametri per la password: quali caratteri usare fra numeri, lettere e simboli. Possono essere scelti singolarmente (es. solo numeri) oppure possono essere combinati fra loro (es. numeri e simboli, oppure tutti e tre insieme). Dare all’utente anche la possibilità di permettere o meno la ripetizione di caratteri uguali.  
+-->
+
+<?php
+$passLength = intval($_GET["passLength"]);
+$alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+$numbers = "0123456789";
+$symbols = "!@#$%^&*()-_+=[]{};:,.<>?";
+$allowedChar = $alphabet . $numbers . $symbols;
+
+function randomPassGenerator($passLength, $allowedChar)
+{
+    $password = "";
+    for ($i = 0; $i < $passLength; $i++) {
+        $randomChar = $allowedChar[rand(0, strlen($allowedChar) - 1)];
+        $password .= $randomChar;
+    }
+
+    return $password;
+}
+
+$password = randomPassGenerator($passLength, $allowedChar)
+?>
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -21,42 +59,34 @@
                     <h6>Lunghezza password : </h6>
                     <span>Consenti ripetizioni di uno o più caratteri :</span>
                 </div>
-                <div class="col-6 d-flex flex-column w-25 gap-3">
-                    <input type="text" class="w-50">
-                    <div class="d-flex flex-column">
-                        <span>
-                            <input type="radio" name="radioYes"> Si
-                        </span>
 
-                        <span>
-                            <input type="radio" name="radioNo"> No
-                        </span>
-                    </div>
-                    <div class="d-flex flex-column">
-                        <span>
-                            <input type="checkbox"> Lettere
-                        </span>
-                        <span>
-                            <input type="checkbox"> Numeri
-                        </span>
+                <div>
+                    <form action="index.php" method="get">
+                        <div class="col-6 d-flex flex-column gap-2">
+                            <input type="text" name="passLength">
 
-                        <span>
-                            <input type="checkbox"> Simboli
-                        </span>
-                    </div>
+                            <div class="d-flex flex-column">
+                                <span><input type="radio" name="radioYes"> Si</span>
+                                <span><input type="radio" name="radioNo"> No</span>
+                            </div>
 
-
-
-
+                            <div class="d-flex flex-column">
+                                <span><input type="checkbox" name="allowChar"> Lettere</span>
+                                <span><input type="checkbox" name="alloqNumb"> Numeri</span>
+                                <span><input type="checkbox" name="allowSymb"> Simboli</span>
+                            </div>
+                        </div>
                 </div>
-            </div>
-            <div>
-                <button class="btn btn-primary"> Invia</button>
-                <button class="btn btn-secondary"> Annulla</button>
+                <div>
+                    <input type="submit" value="Invia" class="btn btn-primary">
+                </div>
+                </form>
             </div>
         </div>
+        <h1>LA PASS E' LUNGA <?php echo $passLength; ?></h1>
+        <h1><?php echo $allowedChar; ?></h1>
+        <h1>LA TUA PASSWORD E' <?php echo $password; ?> </h1>
     </div>
-
 </body>
 
 <style>
